@@ -1,24 +1,31 @@
-# Korean Vulhub (한글판)
+# Django CVE-2021-35042 PoC 보고서
 
-![logo](./README.assets/logo.svg)
+## 개요
 
-[Vulhub](https://github.com/vulhub/vulhub) (<https://vulhub.org/>) 을 기반으로 한국어 번역 및 컨텐츠를 추가하는 것을 목표로 공동작업합니다.
+- **CVE 번호**: CVE-2021-35042
+- **취약점 설명**: Django의 ORM(QuerySet)에서 `order_by()` 메소드가 사용자 입력을 적절히 검증하지 않고 처리하여 **SQL Injection** 취약점이 발생할 수 있음.
+- **영향 버전**: Django 2.2 ~ 2.2.24, 3.1 ~ 3.1.12, 3.2 ~ 3.2.4
+- **공식 패치**: Django 2.2.25, 3.1.13, 3.2.5 버전에서 수정됨
+- **참고 링크**: [Django 공식 보안 공지](https://www.djangoproject.com/weblog/2021/jul/01/security-releases/)
 
-차세대 보안리더 양성 프로그램 화이트햇 스쿨 수강생들이 기여하고 있습니다.
+---
 
-<br/>
+## 환경 구성
 
-### Table of Contents
+- **OS**: Ubuntu 20.04 (Docker container)
+- **Docker**: Docker version 24.0.5
+- **Django 버전**: 3.2.4 (취약한 버전)
+- **Database**: SQLite (테스트 목적)
 
-- Django
-  - [CVE-2021-35042](./_Django/CVE-2021-35042/README.md) | QuerySet.order_by() SQL Injection
-- Express
-  - [CVE-2024-29041](./Express/CVE-2024-29041/README.md) | Express 오픈 리다이렉트 취약점
-- Flask
-  - [SSTI](./Flask/SSTI/README.md) | Server Side Template Injection
-- MySQL
-  - [CVE-2012-2122](./MySQL/CVE-2012-2122/README.md) | MySQL Authentication Bypass
-- Next.js
-  - [CVE-2025-29927](./Next.js/CVE-2025-29927/README.md) | Next.js 미들웨어 인가 우회
-- Nginx
-  - [CVE-2017-7529](./Nginx/CVE-2017-7529/README.md) | Nginx Integer Overflow Vulnerability
+---
+
+## Dockerfile
+
+```Dockerfile
+FROM python:3.8-slim
+
+RUN pip install django==3.2.4
+
+WORKDIR /app
+
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
